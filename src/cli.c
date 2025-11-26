@@ -35,3 +35,24 @@ static void list_employees(void) {
                emps.data[i].id, emps.data[i].name, emps.data[i].department);
     }
 }
+int run_cli(void) {
+    emp_array_init(&emps);
+
+    int choice;
+    do {
+        menu();
+        printf("> ");
+        if (scanf("%d", &choice) != 1) break;
+
+        switch (choice) {
+            case 1: add_employee(); break;
+            case 2: list_employees(); break;
+            case 0: puts("Exiting..."); break;
+            default: puts("Invalid choice.");
+        }
+    } while (choice != 0);
+
+    emp_array_free(&emps);
+    return 0;
+}
+
