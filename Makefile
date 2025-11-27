@@ -1,6 +1,7 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -std=c11 -Iinclude
-OBJ=src/main.o src/cli.o src/dynarray.o
+
+OBJ=src/main.o src/cli.o src/dynarray.o src/io.o
 
 all: kpi
 kpi: $(OBJ)
