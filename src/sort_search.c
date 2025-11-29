@@ -8,8 +8,7 @@
 // --------------------------------------------------
 int find_employee_index_by_id(const EmployeeArray *emps, int id) {
     for (size_t i = 0; i < emps->size; i++) {
-        if (emps->data[i].id == id)
-            return (int)i;
+        if (emps->data[i].id == id) return (int)i;
     }
     return -1; // not found
 }
@@ -26,30 +25,28 @@ int* filter_by_department(const EmployeeArray *emps,
 
     // First pass: count matches
     for (size_t i = 0; i < emps->size; i++) {
-        if (strcmp(emps->data[i].department, dept) == 0)
-            (*out_n)++;
+        if (strcmp(emps->data[i].department, dept) == 0) (*out_n)++;
     }
 
-    if (*out_n == 0)
-        return NULL;
+    if (*out_n == 0) return NULL;
 
     // Second pass: store indexes
-    int *indexes = malloc((*out_n) * sizeof(int));
+    int *indexes = (int*)malloc((*out_n) * sizeof(int));
     size_t pos = 0;
 
     for (size_t i = 0; i < emps->size; i++) {
         if (strcmp(emps->data[i].department, dept) == 0)
             indexes[pos++] = (int)i;
     }
-
     return indexes;
 }
+
 // --------------------------------------------------
 // SORT: Compare names alphabetically (A → Z)
 // --------------------------------------------------
 static int cmp_name(const void *a, const void *b) {
-    const Employee ea = (const Employee)a;
-    const Employee eb = (const Employee)b;
+    const Employee *ea = (const Employee*)a;
+    const Employee *eb = (const Employee*)b;
     return strcmp(ea->name, eb->name);
 }
 
@@ -64,8 +61,8 @@ void sort_employees_by_name(EmployeeArray *emps) {
 // SORT: Compare KPI by ORS (high → low)
 // --------------------------------------------------
 static int cmp_kpi_score(const void *a, const void *b) {
-    const KPI ka = (const KPI)a;
-    const KPI kb = (const KPI)b;
+    const KPI *ka = (const KPI*)a;
+    const KPI *kb = (const KPI*)b;
     if (ka->ors < kb->ors) return 1;
     if (ka->ors > kb->ors) return -1;
     return 0;
