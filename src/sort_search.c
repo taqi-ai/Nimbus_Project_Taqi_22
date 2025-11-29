@@ -44,3 +44,37 @@ int* filter_by_department(const EmployeeArray *emps,
 
     return indexes;
 }
+// --------------------------------------------------
+// SORT: Compare names alphabetically (A → Z)
+// --------------------------------------------------
+static int cmp_name(const void *a, const void *b) {
+    const Employee ea = (const Employee)a;
+    const Employee eb = (const Employee)b;
+    return strcmp(ea->name, eb->name);
+}
+
+// --------------------------------------------------
+// SORT: Employees alphabetically by name
+// --------------------------------------------------
+void sort_employees_by_name(EmployeeArray *emps) {
+    qsort(emps->data, emps->size, sizeof(Employee), cmp_name);
+}
+
+// --------------------------------------------------
+// SORT: Compare KPI by ORS (high → low)
+// --------------------------------------------------
+static int cmp_kpi_score(const void *a, const void *b) {
+    const KPI ka = (const KPI)a;
+    const KPI kb = (const KPI)b;
+    if (ka->ors < kb->ors) return 1;
+    if (ka->ors > kb->ors) return -1;
+    return 0;
+}
+
+// --------------------------------------------------
+// SORT KPI results by overall rank score (ORS)
+// Highest score first
+// --------------------------------------------------
+void sort_kpis_by_score(KPI *k, size_t n) {
+    qsort(k, n, sizeof(KPI), cmp_kpi_score);
+}
