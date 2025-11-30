@@ -1,6 +1,7 @@
 #ifndef IO_H
 #define IO_H
 #include <stddef.h>
+#include <time.h>
 #include "dynarray.h"
 
 // Parse "YYYY-MM-DD" into struct tm; returns 1 on success, 0 on failure

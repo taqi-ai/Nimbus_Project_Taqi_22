@@ -2,6 +2,7 @@
 #define SORT_SEARCH_H
 
 #include <stddef.h>
+#include "dynarray.h"
 #include "kpi.h"
 #include "models.h"
 
