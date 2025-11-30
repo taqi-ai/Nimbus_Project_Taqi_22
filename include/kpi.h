@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include "dynarray.h"
 
-typedef struct {
+typedef struct KPI {
     int employee_id;
     int tasks;
     int errors;
