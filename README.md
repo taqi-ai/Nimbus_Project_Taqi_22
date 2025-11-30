@@ -151,5 +151,10 @@ Team collaboration with Git & GitHub
 
 Clean separation of logic into multiple files
 
+SAMPLE IMAGES:
+
+<img width="1724" height="923" alt="Screenshot 2025-11-30 135042" src="https://github.com/user-attachments/assets/deddabfc-b2e0-40b9-ae9a-18f1def912a3" />
+
+<img width="1707" height="910" alt="image" src="https://github.com/user-attachments/assets/ff9b593d-b4f9-4a93-819e-8c999c596ebf" />
 
 
