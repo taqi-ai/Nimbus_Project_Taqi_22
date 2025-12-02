@@ -15,12 +15,14 @@ static void minmax(const double *v, size_t n, double *mn, double *mx){
     if(*mn == 1e18){ *mn = 0; *mx = 1; }
 }
 
+
 static double norm(double x, double mn, double mx){
     if(mx - mn < 1e-9) return 0.5;
     if(x < mn) x = mn;
     if(x > mx) x = mx;
     return (x - mn) / (mx - mn);
 }
+
 
 void compute_kpis(const EmployeeArray *emps,
                   const TaskLogArray *logs,
@@ -44,6 +46,7 @@ void compute_kpis(const EmployeeArray *emps,
         }
         if(idx == n) continue;
 
+       
         k[idx].tasks++;
         k[idx].hours_total += t.hours_spent;
         k[idx].avg_quality += t.quality_score;
