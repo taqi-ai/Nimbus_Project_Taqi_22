@@ -149,7 +149,7 @@ Real-world KPI modeling
 
 Team collaboration with Git & GitHub
 
-Clean separation of logic into multiple files
+Clean separation of logic into multiple files.
 
 SAMPLE IMAGES:
 
