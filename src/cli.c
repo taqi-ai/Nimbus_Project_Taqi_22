@@ -1,4 +1,9 @@
 // src/cli.c
+// Minimal, focused comments + small cleanups for readability
+// - Keeps existing behavior
+// - Adds a tiny input helper (clear_line)
+// - Uses consistent messages and formatting
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -17,7 +22,12 @@ static TaskLogArray  logs;
 static KPI *kpis = NULL;
 static size_t kpis_n = 0;
 
-// ---- Helpers ----
+// ---- Small utility ----
+static void clear_line(void) {
+    int c; while ((c = getchar()) != '\n' && c != EOF) {}
+}
+
+// ---- Menu ----
 static void print_menu(void) {
     ui_title("Employee KPI CLI");
     puts("  " C_BOLD "1" C_RESET ") Add employee");
@@ -33,17 +43,21 @@ static void print_menu(void) {
     ui_endbox();
 }
 
+// ---- Actions ----
 static void add_employee(void) {
     Employee e;
     printf("Enter: id name department\n> ");
     if (scanf("%d %63s %31s", &e.id, e.name, e.department) != 3) {
         ui_badge_err(); puts(" Invalid input.");
-        int c; while((c=getchar())!='\n' && c!=EOF){} // clear line
+        clear_line();
         return;
     }
     // Duplicate check
     for (size_t i = 0; i < emps.size; ++i) {
-        if (emps.data[i].id == e.id) { ui_badge_warn(); puts(" Employee id already exists."); return; }
+        if (emps.data[i].id == e.id) {
+            ui_badge_warn(); puts(" Employee id already exists.");
+            return;
+        }
     }
     emp_array_push(&emps, e);
     ui_badge_ok(); puts(" Added.");
@@ -59,7 +73,7 @@ static void list_employees(void) {
 }
 
 static void load_logs_csv_action(void) {
-    // IMPORTANT: free old buffer first to avoid leak
+    // Reset previous buffer (avoid leaks)
     log_array_free(&logs);
     log_array_init(&logs);
 
@@ -71,7 +85,7 @@ static void load_logs_csv_action(void) {
 }
 
 static void free_kpis(void){
-    free(kpis); kpis=NULL; kpis_n=0;
+    free(kpis); kpis = NULL; kpis_n = 0;
 }
 
 static void compute_kpi_report(void) {
@@ -87,9 +101,9 @@ static void show_kpis(void) {
     if (!kpis || !kpis_n) { puts(C_GRAY "Compute KPI first (option 4)." C_RESET); return; }
     printf(C_BOLD "%-6s %-5s %-6s %-6s %-6s %-8s %-6s %-6s %-6s %-6s %-5s\n" C_RESET,
            "emp", "tasks","errs","hrs","avgQ","errRate","TPH","PS","RI","ORS","FLAG");
-    for (size_t i=0;i<kpis_n;i++){
-        const char *fclr = (strcmp(kpis[i].flag,"UNDER")==0)? C_RED :
-                           (strcmp(kpis[i].flag,"WATCH")==0)? C_YELLOW : C_GREEN;
+    for (size_t i = 0; i < kpis_n; i++){
+        const char *fclr = (strcmp(kpis[i].flag, "UNDER") == 0) ? C_RED :
+                           (strcmp(kpis[i].flag, "WATCH") == 0) ? C_YELLOW : C_GREEN;
         printf("%-6d %-5d %-6d %-6.1f %-6.1f %-8.3f %-6.2f %-6.2f %-6.2f %-6.2f %s%s" C_RESET "\n",
                kpis[i].employee_id, kpis[i].tasks, kpis[i].errors,
                kpis[i].hours_total, kpis[i].avg_quality, kpis[i].error_rate_s,
@@ -98,25 +112,25 @@ static void show_kpis(void) {
 }
 
 static void sort_emps_by_name_action(void){
-    if (emps.size==0){ puts("No employees."); return; }
+    if (emps.size == 0){ puts("No employees."); return; }
     sort_employees_by_name(&emps);
-    ui_badge_ok(); puts(" Employees sorted by name."); 
+    ui_badge_ok(); puts(" Employees sorted by name.");
     list_employees();
 }
 
 static void rank_by_kpi_action(void){
     if (!kpis || !kpis_n){ puts("Compute KPI first (option 4)."); return; }
     sort_kpis_by_score(kpis, kpis_n);
-    ui_badge_ok(); puts(" KPI ranked by score (high->low)."); 
+    ui_badge_ok(); puts(" KPI ranked by score (high->low).");
     show_kpis();
 }
 
 static void search_by_id_action(void){
-    if (emps.size==0){ puts("No employees."); return; }
-    int id; printf("Enter employee id: "); 
-    if (scanf("%d",&id)!=1){ ui_badge_err(); puts(" Invalid."); return; }
+    if (emps.size == 0){ puts("No employees."); return; }
+    int id; printf("Enter employee id: ");
+    if (scanf("%d", &id) != 1){ ui_badge_err(); puts(" Invalid."); clear_line(); return; }
     int idx = find_employee_index_by_id(&emps, id);
-    if (idx<0){ ui_badge_warn(); puts(" Not found."); return; }
+    if (idx < 0){ ui_badge_warn(); puts(" Not found."); return; }
     printf(C_BOLD "Found: " C_RESET "%d %s %s\n",
            emps.data[idx].id, emps.data[idx].name, emps.data[idx].department);
     if (logs.size){
@@ -126,15 +140,15 @@ static void search_by_id_action(void){
 }
 
 static void filter_by_dept_action(void){
-    if (emps.size==0){ puts("No employees."); return; }
+    if (emps.size == 0){ puts("No employees."); return; }
     char dept[DEPT_MAX_LEN];
-    printf("Enter department (no spaces): "); 
-    if (scanf("%31s", dept)!=1){ ui_badge_err(); puts(" Invalid."); return; }
-    size_t cnt=0; 
+    printf("Enter department (no spaces): ");
+    if (scanf("%31s", dept) != 1){ ui_badge_err(); puts(" Invalid."); clear_line(); return; }
+    size_t cnt = 0;
     int* idx = filter_by_department(&emps, dept, &cnt);
-    if (!idx || cnt==0){ ui_badge_warn(); puts(" No matches."); free(idx); return; }
+    if (!idx || cnt == 0){ ui_badge_warn(); puts(" No matches."); free(idx); return; }
     printf(C_BOLD "Employees in %s:\n" C_RESET, dept);
-    for (size_t i=0;i<cnt;i++){
+    for (size_t i = 0; i < cnt; i++){
         Employee *e = &emps.data[idx[i]];
         printf("%d %s %s\n", e->id, e->name, e->department);
     }
@@ -151,7 +165,7 @@ int run_cli(void) {
     do {
         print_menu();
         printf("> ");
-        if (scanf("%d", &choice) != 1) break;
+        if (scanf("%d", &choice) != 1) { ui_badge_err(); puts(" Invalid input."); break; }
 
         switch (choice) {
             case 1: add_employee(); break;
