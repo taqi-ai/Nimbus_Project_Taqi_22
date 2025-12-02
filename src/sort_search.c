@@ -10,7 +10,7 @@ int find_employee_index_by_id(const EmployeeArray *emps, int id) {
     for (size_t i = 0; i < emps->size; i++) {
         if (emps->data[i].id == id) return (int)i;
     }
-    return -1; // not found
+    return -1; 
 }
 
 // --------------------------------------------------
