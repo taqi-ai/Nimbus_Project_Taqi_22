@@ -1,4 +1,4 @@
-#ifndef DYNARRAY_H
+#ifndef DYNARRAY_
 #define DYNARRAY_H
 
 #include <stddef.h>
