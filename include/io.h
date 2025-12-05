@@ -14,4 +14,4 @@ int load_csv(const char *path, TaskLogArray *logs);
 typedef struct KPI KPI;
 int save_kpis_csv(const char *path, const KPI *k, size_t n);
 
-#endi
+#endif
